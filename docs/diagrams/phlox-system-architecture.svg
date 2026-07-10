@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="1480" height="1010" viewBox="0 0 1480 1010">
+  <!-- Phlox system architecture. Fred Hutch brand palette: navy #1B365D, cyan #00ABC8, purple #AA4AC4, gold #FFB500. -->
+  <!-- Editable SVG: plain shapes + text, no CSS classes, filters, or markers, for clean Visio / Illustrator import. -->
+  <rect x="0" y="0" width="1480" height="1010" fill="#FFFFFF"/>
+
+  <!-- Title block -->
+  <g id="title-block">
+    <rect x="0" y="0" width="1480" height="56" fill="#1B365D"/>
+    <rect x="0" y="56" width="1480" height="4" fill="#FFB500"/>
+    <text x="40" y="36" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF">Phlox — System Architecture</text>
+    <text x="1440" y="24" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#BFD3E6">Fred Hutchinson Cancer Center</text>
+    <text x="1440" y="42" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#BFD3E6">Generated from repository · July 2026</text>
+  </g>
+
+  <!-- Zone: user's browser -->
+  <g id="zone-client">
+    <rect x="40" y="96" width="270" height="360" rx="10" fill="#F7F9FC" stroke="#C6D0DD" stroke-width="1"/>
+    <text x="56" y="120" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="bold" fill="#1B365D" letter-spacing="1">USER'S BROWSER</text>
+    <rect x="58" y="138" width="234" height="196" rx="8" fill="#FFFFFF" stroke="#1B365D" stroke-width="1.5"/>
+    <text x="72" y="160" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#1B365D">React SPA</text>
+    <text x="72" y="176" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#6B7A90">Vite · Tailwind · Zustand</text>
+    <text x="72" y="196" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">Chat UI — streaming markdown</text>
+    <text x="72" y="213" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">Composer — toggles, / skills, @ docs</text>
+    <text x="72" y="230" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">REST client + SSE parser (api/)</text>
+    <text x="72" y="247" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">Artifact canvas (live side panel)</text>
+    <text x="72" y="264" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">Settings drawer — user + admin tabs</text>
+    <text x="72" y="281" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">Login screen (JWT sessions)</text>
+    <text x="72" y="298" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">Theme tokens — 8 themes, CSS vars</text>
+    <text x="72" y="315" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">Zustand store (useStore.js)</text>
+  </g>
+
+  <!-- Client to backend arrow -->
+  <g id="arrow-client-backend">
+    <line x1="318" y1="170" x2="362" y2="170" stroke="#1B365D" stroke-width="2"/>
+    <polygon points="370,170 361,165.5 361,174.5" fill="#1B365D"/>
+    <polygon points="310,170 319,165.5 319,174.5" fill="#1B365D"/>
+    <text x="340" y="158" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="9.5" fill="#44546A">REST · SSE</text>
+  </g>
+
+  <!-- Zone: Phlox backend (trust boundary) -->
+  <g id="zone-backend">
+    <rect x="370" y="96" width="660" height="640" rx="10" fill="#F7F9FC" stroke="#AA4AC4" stroke-width="1.5" stroke-dasharray="7,4"/>
+    <text x="386" y="120" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="bold" fill="#1B365D" letter-spacing="1">PHLOX BACKEND — FASTAPI, SINGLE PROCESS (:8000)</text>
+    <text x="1014" y="120" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="10" font-style="italic" fill="#AA4AC4">trust boundary</text>
+
+    <!-- API layer -->
+    <rect x="390" y="136" width="620" height="58" rx="8" fill="#FFFFFF" stroke="#1B365D" stroke-width="1.5"/>
+    <text x="404" y="158" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#1B365D">API layer — routers/</text>
+    <text x="404" y="178" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">/api/* REST + SSE (19 routers) · /v1/* OpenAI-compatible gateway · /api/health · serves built SPA in prod</text>
+
+    <!-- Agent harness -->
+    <rect x="390" y="210" width="300" height="140" rx="8" fill="#FFFFFF" stroke="#1B365D" stroke-width="1.5"/>
+    <text x="404" y="232" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#1B365D">Agent harness — agent/</text>
+    <text x="404" y="252" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">AgentSession — resumable tool loop</text>
+    <text x="404" y="269" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">ToolRegistry — one unified surface</text>
+    <text x="404" y="286" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#AA4AC4">PermissionGate — auto | ask | deny</text>
+    <text x="404" y="303" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">Context compaction · sub-agents</text>
+    <text x="404" y="320" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">SSE events · human-in-the-loop pause</text>
+
+    <!-- Providers -->
+    <rect x="710" y="210" width="300" height="100" rx="8" fill="#FFFFFF" stroke="#1B365D" stroke-width="1.5"/>
+    <text x="724" y="232" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#1B365D">Model providers — providers/</text>
+    <text x="724" y="252" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">OpenAIProvider · BedrockProvider</text>
+    <text x="724" y="269" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">profile catalog → build_provider</text>
+    <text x="724" y="286" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">timeouts · retries · fallback profile</text>
+
+    <!-- Built-in tools -->
+    <rect x="390" y="366" width="300" height="140" rx="8" fill="#FFFFFF" stroke="#1B365D" stroke-width="1.5"/>
+    <text x="404" y="388" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#1B365D">Built-in tools (19) + MCP proxies</text>
+    <text x="404" y="408" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">read/write/edit/list/glob/grep (fs)</text>
+    <text x="404" y="425" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">run_shell · execute_python / _node</text>
+    <text x="404" y="442" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">search_documents · web_search / _fetch</text>
+    <text x="404" y="459" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">save_memory · use_skill · update_todos</text>
+    <text x="404" y="476" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">spawn_subagent · checkpoints ×3</text>
+
+    <!-- RAG -->
+    <rect x="710" y="326" width="300" height="94" rx="8" fill="#FFFFFF" stroke="#1B365D" stroke-width="1.5"/>
+    <text x="724" y="348" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#1B365D">RAG pipeline — rag/</text>
+    <text x="724" y="368" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">parse → chunk → embed (dense + sparse)</text>
+    <text x="724" y="385" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">hybrid search · RRF fusion · rerank</text>
+    <text x="724" y="402" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">offline fallback embedder</text>
+
+    <!-- MCP manager -->
+    <rect x="710" y="436" width="300" height="70" rx="8" fill="#FFFFFF" stroke="#1B365D" stroke-width="1.5"/>
+    <text x="724" y="458" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#1B365D">MCP manager — mcp/</text>
+    <text x="724" y="478" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">background asyncio loop; proxies tools</text>
+    <text x="724" y="494" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">registered as mcp__&lt;server&gt;__&lt;tool&gt;</text>
+
+    <!-- Sandbox -->
+    <rect x="390" y="522" width="300" height="96" rx="8" fill="#FBF5FD" stroke="#AA4AC4" stroke-width="1.5"/>
+    <text x="404" y="544" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#1B365D">Code-exec sandbox — sandbox/</text>
+    <text x="404" y="564" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">SandboxRunner seam (config, file-only):</text>
+    <text x="404" y="580" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">local · container · agentcore (off-host)</text>
+    <text x="404" y="596" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">live output · process-tree cancellation</text>
+
+    <!-- Auth -->
+    <rect x="710" y="522" width="300" height="96" rx="8" fill="#FBF5FD" stroke="#AA4AC4" stroke-width="1.5"/>
+    <text x="724" y="544" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#1B365D">Auth — auth/</text>
+    <text x="724" y="564" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">bcrypt + JWT sessions · Entra ID OIDC</text>
+    <text x="724" y="580" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">per-user isolation · require_admin</text>
+    <text x="724" y="596" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">API keys (SHA-256 hashed) for /v1</text>
+
+    <!-- Config layers -->
+    <rect x="390" y="634" width="620" height="56" rx="8" fill="#FFFFFF" stroke="#1B365D" stroke-width="1.5"/>
+    <text x="404" y="656" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#1B365D">Configuration layers</text>
+    <text x="404" y="676" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">config.yml seed (security keys file-only) → AppConfig DB overlay (admin-edited, live) → per-user Settings</text>
+  </g>
+
+  <!-- Zone: external systems -->
+  <g id="zone-external">
+    <rect x="1070" y="96" width="370" height="640" rx="10" fill="#FCFCF9" stroke="#C6D0DD" stroke-width="1"/>
+    <text x="1086" y="120" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="bold" fill="#1B365D" letter-spacing="1">EXTERNAL SYSTEMS</text>
+
+    <rect x="1090" y="136" width="330" height="106" rx="8" fill="#FFFAEC" stroke="#FFB500" stroke-width="1.5"/>
+    <text x="1104" y="158" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#1B365D">Model provider endpoints</text>
+    <text x="1104" y="178" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">AWS Bedrock (Converse API)</text>
+    <text x="1104" y="194" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">OpenAI-compatible: OpenAI, Ollama,</text>
+    <text x="1104" y="210" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">vLLM, LM Studio, LiteLLM, OpenRouter</text>
+    <text x="1104" y="228" font-family="Arial, Helvetica, sans-serif" font-size="10" font-style="italic" fill="#6B7A90">called by providers/ — chat + embeddings</text>
+
+    <rect x="1090" y="258" width="330" height="64" rx="8" fill="#FFFAEC" stroke="#FFB500" stroke-width="1.5"/>
+    <text x="1104" y="280" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#1B365D">MCP servers</text>
+    <text x="1104" y="300" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">stdio · SSE · streamable HTTP  <tspan font-style="italic" fill="#6B7A90">(via mcp/)</tspan></text>
+
+    <rect x="1090" y="338" width="330" height="72" rx="8" fill="#FFFAEC" stroke="#FFB500" stroke-width="1.5"/>
+    <text x="1104" y="360" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#1B365D">Live web</text>
+    <text x="1104" y="380" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">ddgs (default) · SearXNG (optional)</text>
+    <text x="1104" y="396" font-family="Arial, Helvetica, sans-serif" font-size="10" font-style="italic" fill="#6B7A90">web_search / web_fetch — SSRF-guarded</text>
+
+    <rect x="1090" y="426" width="330" height="58" rx="8" fill="#FFFAEC" stroke="#FFB500" stroke-width="1.5"/>
+    <text x="1104" y="448" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#1B365D">Microsoft Entra ID</text>
+    <text x="1104" y="468" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">optional SSO  <tspan font-style="italic" fill="#6B7A90">(OIDC code flow via auth/entra)</tspan></text>
+
+    <rect x="1090" y="500" width="330" height="72" rx="8" fill="#FFFAEC" stroke="#FFB500" stroke-width="1.5"/>
+    <text x="1104" y="522" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#1B365D">AWS Bedrock AgentCore</text>
+    <text x="1104" y="542" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">Code Interpreter — Firecracker microVM</text>
+    <text x="1104" y="558" font-family="Arial, Helvetica, sans-serif" font-size="10" font-style="italic" fill="#6B7A90">used by sandbox.runner: agentcore</text>
+
+    <rect x="1090" y="588" width="330" height="72" rx="8" fill="#FFFAEC" stroke="#FFB500" stroke-width="1.5"/>
+    <text x="1104" y="610" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#1B365D">Podman / Docker engine</text>
+    <text x="1104" y="630" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">ephemeral sandbox containers, --rm</text>
+    <text x="1104" y="646" font-family="Arial, Helvetica, sans-serif" font-size="10" font-style="italic" fill="#6B7A90">used by sandbox.runner: container</text>
+  </g>
+
+  <!-- Backend to external arrows -->
+  <g id="arrows-external">
+    <line x1="1030" y1="189" x2="1082" y2="189" stroke="#1B365D" stroke-width="1.5"/>
+    <polygon points="1090,189 1081,185 1081,193" fill="#1B365D"/>
+    <line x1="1030" y1="290" x2="1082" y2="290" stroke="#1B365D" stroke-width="1.5"/>
+    <polygon points="1090,290 1081,286 1081,294" fill="#1B365D"/>
+    <line x1="1030" y1="374" x2="1082" y2="374" stroke="#1B365D" stroke-width="1.5"/>
+    <polygon points="1090,374 1081,370 1081,378" fill="#1B365D"/>
+    <line x1="1030" y1="455" x2="1082" y2="455" stroke="#1B365D" stroke-width="1.5"/>
+    <polygon points="1090,455 1081,451 1081,459" fill="#1B365D"/>
+    <line x1="1030" y1="536" x2="1082" y2="536" stroke="#1B365D" stroke-width="1.5"/>
+    <polygon points="1090,536 1081,532 1081,540" fill="#1B365D"/>
+    <line x1="1030" y1="624" x2="1082" y2="624" stroke="#1B365D" stroke-width="1.5"/>
+    <polygon points="1090,624 1081,620 1081,628" fill="#1B365D"/>
+  </g>
+
+  <!-- Zone: persistent state -->
+  <g id="zone-data">
+    <rect x="370" y="766" width="660" height="170" rx="10" fill="#F4FBFD" stroke="#C6D0DD" stroke-width="1"/>
+    <text x="386" y="790" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="bold" fill="#1B365D" letter-spacing="1">PERSISTENT STATE — backend/data/ (defaults)</text>
+
+    <rect x="390" y="800" width="196" height="112" rx="8" fill="#E9F8FB" stroke="#00ABC8" stroke-width="1.5"/>
+    <text x="402" y="822" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="bold" fill="#1B365D">Relational DB</text>
+    <text x="402" y="842" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#44546A">SQLite (default) or Postgres</text>
+    <text x="402" y="858" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#44546A">via DATABASE_URL</text>
+    <text x="402" y="874" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#44546A">users · chats · documents · skills</text>
+    <text x="402" y="890" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#44546A">assistants · budgets · usage ledger</text>
+
+    <rect x="602" y="800" width="196" height="112" rx="8" fill="#E9F8FB" stroke="#00ABC8" stroke-width="1.5"/>
+    <text x="614" y="822" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="bold" fill="#1B365D">Qdrant vector store</text>
+    <text x="614" y="842" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#44546A">embedded on-disk (default)</text>
+    <text x="614" y="858" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#44546A">or server via vector_store.url</text>
+    <text x="614" y="874" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#44546A">named dense + sparse vectors</text>
+    <text x="614" y="890" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#44546A">SQLite is the source of truth</text>
+
+    <rect x="814" y="800" width="196" height="112" rx="8" fill="#E9F8FB" stroke="#00ABC8" stroke-width="1.5"/>
+    <text x="826" y="822" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="bold" fill="#1B365D">Workspace filesystem</text>
+    <text x="826" y="842" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#44546A">data/workspaces/&lt;conversation&gt;</text>
+    <text x="826" y="858" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#44546A">git-backed checkpoints</text>
+    <text x="826" y="874" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#44546A">uploads · attachments</text>
+    <text x="826" y="890" font-family="Arial, Helvetica, sans-serif" font-size="10.5" fill="#44546A">path-traversal guard</text>
+  </g>
+
+  <!-- Backend to data arrows -->
+  <g id="arrows-data">
+    <line x1="488" y1="736" x2="488" y2="792" stroke="#1B365D" stroke-width="1.5"/>
+    <polygon points="488,800 484,791 492,791" fill="#1B365D"/>
+    <line x1="700" y1="736" x2="700" y2="792" stroke="#1B365D" stroke-width="1.5"/>
+    <polygon points="700,800 696,791 704,791" fill="#1B365D"/>
+    <line x1="912" y1="736" x2="912" y2="792" stroke="#1B365D" stroke-width="1.5"/>
+    <polygon points="912,800 908,791 916,791" fill="#1B365D"/>
+  </g>
+
+  <!-- Legend -->
+  <g id="legend">
+    <text x="40" y="946" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#1B365D">LEGEND</text>
+    <rect x="40" y="956" width="16" height="16" rx="3" fill="#FFFFFF" stroke="#1B365D" stroke-width="1.5"/>
+    <text x="64" y="969" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">Phlox application component</text>
+    <rect x="240" y="956" width="16" height="16" rx="3" fill="#FBF5FD" stroke="#AA4AC4" stroke-width="1.5"/>
+    <text x="264" y="969" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">security seam</text>
+    <rect x="380" y="956" width="16" height="16" rx="3" fill="#E9F8FB" stroke="#00ABC8" stroke-width="1.5"/>
+    <text x="404" y="969" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">data store</text>
+    <rect x="500" y="956" width="16" height="16" rx="3" fill="#FFFAEC" stroke="#FFB500" stroke-width="1.5"/>
+    <text x="524" y="969" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">external system</text>
+    <line x1="640" y1="964" x2="684" y2="964" stroke="#AA4AC4" stroke-width="1.5" stroke-dasharray="7,4"/>
+    <text x="694" y="969" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">trust boundary (Phlox host)</text>
+    <line x1="866" y1="964" x2="902" y2="964" stroke="#1B365D" stroke-width="1.5"/>
+    <polygon points="910,964 901,960 901,968" fill="#1B365D"/>
+    <text x="920" y="969" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">direction of calls</text>
+  </g>
+</svg>

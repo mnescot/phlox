@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="1060" height="1240" viewBox="0 0 1060 1240">
+  <!-- Phlox chat request lifecycle (the agent loop). Fred Hutch brand palette: navy #1B365D, cyan #00ABC8, purple #AA4AC4, gold #FFB500. -->
+  <!-- Editable SVG: plain shapes + text, no CSS classes, filters, or markers, for clean Visio / Illustrator import. -->
+  <rect x="0" y="0" width="1060" height="1240" fill="#FFFFFF"/>
+
+  <!-- Title block -->
+  <g id="title-block">
+    <rect x="0" y="0" width="1060" height="56" fill="#1B365D"/>
+    <rect x="0" y="56" width="1060" height="4" fill="#FFB500"/>
+    <text x="32" y="36" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="bold" fill="#FFFFFF">Phlox — Chat Request Lifecycle (agent loop)</text>
+    <text x="1028" y="36" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#BFD3E6">Fred Hutchinson Cancer Center · July 2026</text>
+  </g>
+
+  <!-- S1: user sends -->
+  <g id="s1">
+    <rect x="140" y="92" width="640" height="60" rx="8" fill="#FFFFFF" stroke="#1B365D" stroke-width="1.5"/>
+    <text x="460" y="115" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#1B365D">1 · User sends a message</text>
+    <text x="460" y="135" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">Composer: text + toggles (web / docs / skills / Agent mode) → POST /api/chat</text>
+  </g>
+  <line x1="460" y1="152" x2="460" y2="180" stroke="#1B365D" stroke-width="1.5"/>
+  <polygon points="460,188 456,179 464,179" fill="#1B365D"/>
+
+  <!-- S2: turn setup -->
+  <g id="s2">
+    <rect x="140" y="188" width="640" height="92" rx="8" fill="#FFFFFF" stroke="#1B365D" stroke-width="1.5"/>
+    <text x="460" y="211" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#1B365D">2 · Turn setup — routers/chat.py</text>
+    <text x="460" y="231" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">resolve conversation + pinned assistant · persist user Message · enforce_budget (402 if over)</text>
+    <text x="460" y="248" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">rebuild canonical history (+ compaction) · inject memories, skills, document references</text>
+    <text x="460" y="265" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">build LLMProvider (active profile) + PermissionGate + AgentSession</text>
+  </g>
+  <line x1="460" y1="280" x2="460" y2="308" stroke="#1B365D" stroke-width="1.5"/>
+  <polygon points="460,316 456,307 464,307" fill="#1B365D"/>
+
+  <!-- S3: provider round -->
+  <g id="s3">
+    <rect x="140" y="316" width="640" height="64" rx="8" fill="#FFFFFF" stroke="#1B365D" stroke-width="1.5"/>
+    <text x="460" y="339" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#1B365D">3 · Agent round — provider.stream(messages, tools, params)</text>
+    <text x="460" y="359" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">StreamDelta: text → SSE <tspan font-style="italic">token</tspan> · reasoning → SSE <tspan font-style="italic">thinking</tspan></text>
+  </g>
+  <line x1="460" y1="380" x2="460" y2="408" stroke="#1B365D" stroke-width="1.5"/>
+  <polygon points="460,416 456,407 464,407" fill="#1B365D"/>
+
+  <!-- D1: tool calls? -->
+  <g id="d1">
+    <polygon points="460,416 600,466 460,516 320,466" fill="#FFFFFF" stroke="#1B365D" stroke-width="1.5"/>
+    <text x="460" y="462" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="bold" fill="#1B365D">tool calls</text>
+    <text x="460" y="479" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="bold" fill="#1B365D">this round?</text>
+  </g>
+  <!-- D1 no branch -->
+  <g id="d1-no">
+    <line x1="600" y1="466" x2="950" y2="466" stroke="#1B365D" stroke-width="1.5"/>
+    <line x1="950" y1="466" x2="950" y2="962" stroke="#1B365D" stroke-width="1.5"/>
+    <line x1="950" y1="962" x2="792" y2="962" stroke="#1B365D" stroke-width="1.5"/>
+    <polygon points="784,962 793,958 793,966" fill="#1B365D"/>
+    <text x="620" y="458" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#44546A">no — final answer</text>
+  </g>
+  <!-- D1 yes -->
+  <line x1="460" y1="516" x2="460" y2="544" stroke="#1B365D" stroke-width="1.5"/>
+  <polygon points="460,552 456,543 464,543" fill="#1B365D"/>
+  <text x="472" y="536" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#44546A">yes — for each call</text>
+
+  <!-- S4: permission gate -->
+  <g id="s4">
+    <rect x="140" y="552" width="640" height="58" rx="8" fill="#FBF5FD" stroke="#AA4AC4" stroke-width="1.5"/>
+    <text x="460" y="575" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#1B365D">4 · PermissionGate — agent/permissions.py</text>
+    <text x="460" y="595" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">policy per tool (ToolPref): auto → run · ask → depends on Agent mode · deny → skip</text>
+  </g>
+  <line x1="460" y1="610" x2="460" y2="638" stroke="#1B365D" stroke-width="1.5"/>
+  <polygon points="460,646 456,637 464,637" fill="#1B365D"/>
+
+  <!-- D2: needs approval? -->
+  <g id="d2">
+    <polygon points="460,646 610,698 460,750 310,698" fill="#FBF5FD" stroke="#AA4AC4" stroke-width="1.5"/>
+    <text x="460" y="694" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="bold" fill="#1B365D">ask policy and turn</text>
+    <text x="460" y="711" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="12.5" font-weight="bold" fill="#1B365D">not auto-approved?</text>
+  </g>
+
+  <!-- Pause box (right) -->
+  <g id="pause">
+    <line x1="610" y1="698" x2="672" y2="698" stroke="#AA4AC4" stroke-width="1.5"/>
+    <polygon points="680,698 671,694 671,702" fill="#AA4AC4"/>
+    <text x="622" y="690" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#AA4AC4">yes</text>
+    <rect x="680" y="636" width="340" height="124" rx="8" fill="#FBF5FD" stroke="#AA4AC4" stroke-width="1.5"/>
+    <text x="850" y="659" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#1B365D">Pause — human in the loop</text>
+    <text x="850" y="679" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">persist PendingApproval (full in-flight state)</text>
+    <text x="850" y="696" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">SSE <tspan font-style="italic">approval_request</tspan> + <tspan font-style="italic">paused</tspan> · stream ends</text>
+    <text x="850" y="713" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">user decides → POST /api/chat/approve</text>
+    <text x="850" y="730" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">AgentSession.resume — stateless, survives</text>
+    <text x="850" y="746" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">disconnects · denied → tool skipped, loop continues</text>
+    <line x1="850" y1="760" x2="850" y2="788" stroke="#AA4AC4" stroke-width="1.5"/>
+    <line x1="850" y1="788" x2="720" y2="788" stroke="#AA4AC4" stroke-width="1.5"/>
+    <line x1="720" y1="788" x2="720" y2="800" stroke="#AA4AC4" stroke-width="1.5"/>
+    <polygon points="720,808 716,799 724,799" fill="#AA4AC4"/>
+    <text x="862" y="782" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#AA4AC4">approved → resume</text>
+  </g>
+
+  <!-- D2 no -->
+  <line x1="460" y1="750" x2="460" y2="800" stroke="#1B365D" stroke-width="1.5"/>
+  <polygon points="460,808 456,799 464,799" fill="#1B365D"/>
+  <text x="472" y="780" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#44546A">no — auto, or Agent mode approved</text>
+
+  <!-- S6: execute tool -->
+  <g id="s6">
+    <rect x="140" y="808" width="640" height="100" rx="8" fill="#FFFFFF" stroke="#1B365D" stroke-width="1.5"/>
+    <text x="460" y="831" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#1B365D">5 · Execute via ToolRegistry</text>
+    <text x="460" y="851" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">fs / shell / code → workspace + sandbox runner · docs → RAG · web · memory · MCP proxies</text>
+    <text x="460" y="868" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">SSE <tspan font-style="italic">tool_call</tspan> · <tspan font-style="italic">tool_progress</tspan> (live output) · <tspan font-style="italic">tool_result</tspan> · <tspan font-style="italic">artifact</tspan></text>
+    <text x="460" y="885" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">append result to history · auto-checkpoint after mutating tools</text>
+  </g>
+
+  <!-- Loop back arrow -->
+  <g id="loop">
+    <line x1="140" y1="858" x2="80" y2="858" stroke="#1B365D" stroke-width="1.5"/>
+    <line x1="80" y1="858" x2="80" y2="348" stroke="#1B365D" stroke-width="1.5"/>
+    <line x1="80" y1="348" x2="132" y2="348" stroke="#1B365D" stroke-width="1.5"/>
+    <polygon points="140,348 131,344 131,352" fill="#1B365D"/>
+    <text x="70" y="620" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A" transform="rotate(-90 70 620)">next round — up to max_tool_rounds</text>
+  </g>
+  <line x1="460" y1="908" x2="460" y2="932" stroke="#1B365D" stroke-width="1.5"/>
+  <polygon points="460,940 456,931 464,931" fill="#1B365D"/>
+
+  <!-- S7: persist -->
+  <g id="s7">
+    <rect x="140" y="940" width="640" height="84" rx="8" fill="#E9F8FB" stroke="#00ABC8" stroke-width="1.5"/>
+    <text x="460" y="963" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#1B365D">6 · Turn complete — persist and account</text>
+    <text x="460" y="983" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">assistant Message saved: final text + structured tool steps + artifacts + usage (tokens · cost)</text>
+    <text x="460" y="1000" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">UsageLedger row appended (chargeback + budgets) · SSE <tspan font-style="italic">done</tspan> with message id</text>
+  </g>
+  <line x1="460" y1="1024" x2="460" y2="1048" stroke="#1B365D" stroke-width="1.5"/>
+  <polygon points="460,1056 456,1047 464,1047" fill="#1B365D"/>
+
+  <!-- S8: reconcile -->
+  <g id="s8">
+    <rect x="140" y="1056" width="640" height="60" rx="8" fill="#FFFFFF" stroke="#1B365D" stroke-width="1.5"/>
+    <text x="460" y="1079" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="bold" fill="#1B365D">7 · Frontend reconciles</text>
+    <text x="460" y="1099" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">store re-fetches the conversation (canonical state) · a queued follow-up message auto-sends</text>
+  </g>
+
+  <!-- Legend -->
+  <g id="legend">
+    <text x="140" y="1160" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="bold" fill="#1B365D">LEGEND</text>
+    <rect x="140" y="1172" width="16" height="16" rx="3" fill="#FFFFFF" stroke="#1B365D" stroke-width="1.5"/>
+    <text x="164" y="1185" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">processing step</text>
+    <rect x="300" y="1172" width="16" height="16" rx="3" fill="#FBF5FD" stroke="#AA4AC4" stroke-width="1.5"/>
+    <text x="324" y="1185" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">permission / human-in-the-loop seam</text>
+    <rect x="560" y="1172" width="16" height="16" rx="3" fill="#E9F8FB" stroke="#00ABC8" stroke-width="1.5"/>
+    <text x="584" y="1185" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A">persistence</text>
+    <text x="700" y="1185" font-family="Arial, Helvetica, sans-serif" font-size="11" fill="#44546A"><tspan font-style="italic">italics</tspan> = SSE event names</text>
+  </g>
+</svg>

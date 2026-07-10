@@ -54,8 +54,8 @@ regardless of provider, so the rest of the app is auth-method-agnostic.
   of a profile's secrets, including the full set of AWS Bedrock credentials (the single
   Bedrock API key / bearer token, or IAM access key id + secret access key + session token),
   each masked and preserved independently. And the sandbox **runner type**
-  (`local` vs `container`) is **not** UI-editable (only its limits are), so isolation can't be
-  downgraded at runtime. Bootstrap/security-sensitive settings — `auth.*` (incl. `jwt_secret`
+  (`local` / `container` / `agentcore`) is **not** UI-editable (only its limits are), so
+  isolation can't be downgraded at runtime. Bootstrap/security-sensitive settings — `auth.*` (incl. `jwt_secret`
   and `enabled`), `vector_store`, and OTel/request-logging — stay **file-only**.
 - **One deliberate exception — the usage ledger.** For departmental **chargeback**, an
   append-only `UsageLedger` records per-turn token usage + cost with the user's identity

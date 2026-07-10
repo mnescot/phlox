@@ -10,29 +10,20 @@ OpenAI-compatible endpoint, including local models).
 
 ## 1. Big picture
 
-```
-┌─────────────────────────────┐         SSE / REST          ┌──────────────────────────────┐
-│  Frontend (React + Vite)    │  ───────────────────────►   │  Backend (FastAPI)           │
-│                             │                             │                              │
-│  store/useStore.js (zustand)│   POST /api/chat (stream)   │  routers/chat.py             │
-│  api/sse.js  api/client.js  │ ◄─────────────────────────  │      │                       │
-│  components/chat/*          │                             │      ▼                       │
-│  theme/ (CSS-var tokens)    │                             │  agent/harness.py  ◄── loop  │
-└─────────────────────────────┘                             │      │  ToolRegistry +        │
-                                                            │      │  PermissionGate        │
-                                                            │      ▼                        │
-                                                            │  providers/ (OpenAI|Bedrock)  │
-                                                            │  agent/tools/ (fs,shell,code, │
-                                                            │     docs,web)  + MCP proxies  │
-                                                            │  rag/  sandbox/  workspace/   │
-                                                            │  SQLite (models.py)           │
-                                                            └──────────────────────────────┘
-```
+![Phlox system architecture](diagrams/phlox-system-architecture.svg)
+
+*(All diagrams live in [`docs/diagrams/`](diagrams/) as editable, brand-palette SVG —
+they import cleanly into Visio/Illustrator. The palette is the `hutch-*` brand set from
+`frontend/tailwind.config.js`.)*
 
 **Two processes.** In dev, Vite (`:5173`) proxies `/api` to FastAPI (`:8000`). In prod,
 FastAPI serves the built SPA from `frontend/dist` (see `backend/app/main.py`).
+Deployment topologies are drawn in
+[`diagrams/phlox-deployment-sandbox-options.svg`](diagrams/phlox-deployment-sandbox-options.svg).
 
 ## 2. The request lifecycle (most important thing to understand)
+
+![Chat request lifecycle](diagrams/phlox-chat-request-lifecycle.svg)
 
 A chat turn flows through these pieces:
 
@@ -74,7 +65,8 @@ deals with provider-specific shapes.
 | **Persistence** | `database.py`, `models.py`, `schemas.py` | SQLite engine, ORM tables, Pydantic I/O |
 | **Providers** | `providers/base.py`, `openai_provider.py`, `bedrock_provider.py`, `registry.py` | Provider abstraction + streaming + embeddings |
 | **Agent** | `agent/harness.py`, `registry.py`, `permissions.py`, `events.py`, `context.py` | The resumable loop, tool registry, permission gate, SSE events, context compaction |
-| **Tools** | `agent/tools/{base,fs,shell,code,docs,web,memory,planning,subagent,checkpoint}.py` | Built-in tools (file/exec/web/RAG + memory, todo planning, sub-agents, checkpoints) |
+| **Tools** | `agent/tools/{base,fs,shell,code,docs,web,memory,planning,subagent,checkpoint,skills}.py` | Built-in tools (file/exec/web/RAG + memory, todo planning, sub-agents, checkpoints, `use_skill`) — 19 in all |
+| **Skills** | `skills.py`, `routers/skills.py`, `agent/tools/skills.py` | Reusable markdown workflows: `/` slash invocation + auto-activation via `use_skill`, SKILL.md import/export, private/public visibility. See [SKILLS.md](SKILLS.md) |
 | **Assistants** | `routers/assistants.py` | Admin-curated personas (base model + system prompt + shared knowledge base + capability limits); reads for all users, writes admin-gated |
 | **Memory** | `memory.py`, `routers/memories.py` | Cross-conversation memory: save + semantic retrieval into the system prompt |
 | **Checkpoints** | `workspace/checkpoints.py`, `routers/checkpoints.py` | Git-backed workspace snapshots + restore (auto-snapshot after mutating tools) |
@@ -87,7 +79,7 @@ deals with provider-specific shapes.
 | **Observability** | `observability.py`, `usage_ledger.py`, `routers/usage.py` | Per-request logging, OTel seam, per-turn token/cost capture + durable chargeback ledger. See [OBSERVABILITY.md](OBSERVABILITY.md) |
 | **Budgets** | `budgets.py`, `routers/budgets.py` | Monthly USD spend caps per user/department: current-month spend (from the ledger), warn/block status, and `enforce_budget` applied at the chat + gateway choke points. See [BUDGETS.md](BUDGETS.md) |
 | **API gateway** | `api_keys.py`, `routers/api_keys.py`, `routers/gateway.py` | Per-user API keys (SHA-256 hashed) + OpenAI-compatible `/v1/chat/completions` & `/v1/models`; usage flows through `usage_ledger`. See [API_GATEWAY.md](API_GATEWAY.md) |
-| **Routers** | `routers/*.py` | `auth, chat, conversations, providers, settings, documents, assistants, mcp, tools, files, memories, checkpoints, attachments, usage, admin_config, api_keys, gateway, budgets` |
+| **Routers** | `routers/*.py` | `auth, chat, conversations, providers, settings, documents, assistants, mcp, tools, files, memories, checkpoints, attachments, usage, admin_config, api_keys, gateway, budgets, skills` |
 
 ### Key design decisions
 - **One unified tool surface.** Built-in tools, MCP tools, and `search_documents` all
@@ -221,12 +213,12 @@ deals with provider-specific shapes.
 |---|---|---|
 | **State** | `store/useStore.js` | Zustand store: conversations, messages, settings, live streaming assembly |
 | **API** | `api/client.js`, `api/sse.js` | REST client + SSE stream parser for `/api/chat` |
-| **Theme** | `theme/tokens.css`, `presets.js` | CSS-variable token layer + theme catalog (FH default) |
-| **Layout** | `components/layout/Header.jsx`, `Sidebar.jsx` | FH logo header, conversation list, nav |
+| **Theme** | `theme/tokens.css`, `presets.js` | CSS-variable token layer + theme catalog (8 themes, Phlox Dark default) |
+| **Layout** | `components/layout/Header.jsx`, `Sidebar.jsx` | Phlox logo header, conversation list, nav |
 | **Chat** | `components/chat/*` | `Message`, `ToolCallCard`, `ArtifactViewer`, `Composer`; `pages/ChatPage.jsx` |
 | **Canvas** | `components/canvas/CanvasPanel.jsx`, `utils/canvas.js` | Side-panel live preview of html/markdown/text artifacts (see below) |
 | **Markdown** | `components/markdown/Markdown.jsx` | react-markdown + GFM + syntax highlight + copy |
-| **Settings** | `components/settings/*`, `documents/*`, `mcp/*`, `tools/*` | Drawer with user tabs (Model, Appearance, Documents, Memory, API Keys) + admin tabs (**Assistants**, Users, Usage & Cost, **Budgets**, **Configuration**, Authentication, MCP, Tools) |
+| **Settings** | `components/settings/*`, `documents/*`, `mcp/*`, `tools/*` | Drawer with user tabs (Model, Appearance, Documents, Memory, **Skills**, API Keys) + admin tabs (**Assistants**, Users, Usage & Cost, **Budgets**, **Configuration**, Authentication, MCP, Tools) |
 | **Assistants** | `components/assistants/AssistantAvatar.jsx`, `settings/AssistantsPanel.jsx` | Avatar renderer (image / emoji / initials) + admin editor (persona, model, suggestions, capabilities, KB upload); picker chips live in `ChatPage.jsx`, active-assistant pill in `Header.jsx` |
 
 The frontend renders a rich turn: collapsible **tool cards** (args + results), a
@@ -270,6 +262,9 @@ drag handle on its left edge.
   **`Document`** (KB docs, which are deployment-owned: `user_id=NULL`).
 - `Setting` (key/value), `McpServer`, `ToolPref` (enabled + permission per tool),
   `Memory` (cross-conversation facts), `PendingApproval` (paused-run state for resume).
+- `Skill` — a reusable markdown workflow: slug `name`, trigger `description`, markdown
+  `instructions`, `auto_activate`, `visibility` (`public|private`), `created_by`. Seeded
+  with three examples on first boot. See [SKILLS.md](SKILLS.md).
 - `UsageLedger` — append-only, **FK-free** per-turn token/cost rows with a snapshot of the
   billable identity (username/email/department). Deliberately survives user deletion for
   chargeback; see [OBSERVABILITY.md](OBSERVABILITY.md) / [AUTH.md](AUTH.md).
@@ -316,6 +311,8 @@ Three layers, each with a clear job:
 - **A new theme** → add a `[data-theme]` block + a `presets.js` entry. See
   [THEMING.md](THEMING.md).
 - **MCP servers** → no code; configure in the UI. Internals in [MCP.md](MCP.md).
+- **A new skill** → no code; **Settings → Skills** (or import a SKILL.md). See
+  [SKILLS.md](SKILLS.md).
 - **A new settings tab / panel** → add a tab in `components/settings/SettingsDrawer.jsx`.
 - **A spend/quota check on model calls** → add it to `budgets.py` and call it from the gate
   in both `routers/chat.py` and `routers/gateway.py` (the two model-call choke points).
@@ -327,8 +324,8 @@ Three layers, each with a clear job:
 
 See the top-level [README](../README.md) for setup (including how to run the test suite).
 Quick end-to-end checks that the foundation passed (reproduce any of these):
-- `GET /api/health` → `{status: ok, tools: N}` (N = number of registered tools, ~40 with
-  the built-ins; MCP servers add more).
+- `GET /api/health` → `{status: ok, tools: N}` (N = number of registered tools; 19
+  built-ins, and connected MCP servers add more).
 - `POST /api/chat` with "Use execute_python to compute sum(1..100)" → streams a
   `tool_call`/`tool_result` (`5050`) then `token`s then `done`.
 - Upload a `.txt` document, attach it with the paperclip or reference it with `@`, then ask
