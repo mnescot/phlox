@@ -9,16 +9,14 @@ integration — over **any** model provider (AWS Bedrock or any OpenAI-compatibl
 including local models like Ollama).
 
 ## Read this before changing code
-**[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** — the system map and the request
-lifecycle. Then the focused guides:
+**[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** — the system map, the request lifecycle,
+and the diagrams (`docs/diagrams/`). Then:
 - [docs/ROADMAP.md](docs/ROADMAP.md) — status + what's next (Tiers 1–5)
-- [docs/ADDING_A_TOOL.md](docs/ADDING_A_TOOL.md)
-- [docs/ADDING_A_PROVIDER.md](docs/ADDING_A_PROVIDER.md)
-- [docs/AUTH.md](docs/AUTH.md) — auth, roles, multi-user isolation, Entra ID SSO
-- [docs/API_GATEWAY.md](docs/API_GATEWAY.md) — OpenAI-compatible API gateway: keys + `/v1/*`
-- [docs/SANDBOX.md](docs/SANDBOX.md) — local vs Podman/Docker code-exec sandbox
-- [docs/THEMING.md](docs/THEMING.md)
-- [docs/MCP.md](docs/MCP.md)
+- [docs/ADDING_A_TOOL.md](docs/ADDING_A_TOOL.md) · [docs/ADDING_A_PROVIDER.md](docs/ADDING_A_PROVIDER.md) — extension guides
+- The full per-topic guide index (auth, sandbox, skills, budgets, gateway, deployment,
+  Docker, MCP, theming, observability) is the **Documentation table in the top-level
+  [README](README.md#documentation)** — it is the single canonical index; don't duplicate
+  it here.
 
 ## Stack
 - **Backend**: Python 3.11+, FastAPI, SQLAlchemy + SQLite, SSE streaming. Managed with
@@ -57,8 +55,9 @@ live in `backend/evals/run_evals.py` and are not part of CI.
 - The **permission gate** (`agent/permissions.py`) is the safety seam; default mutating/
   exec tools to `ask`.
 - Code execution uses the **sandbox interface** (`sandbox/runner.py`). The local runner
-  trusts the host; `ContainerRunner` (Podman/Docker) is the isolated option, selected via
-  `sandbox.runner: container`. Add further strategies by implementing `SandboxRunner`.
+  trusts the host; `ContainerRunner` (Podman/Docker, `sandbox.runner: container`) and
+  `AgentCoreCodeInterpreterRunner` (off-host AWS microVM, `sandbox.runner: agentcore`)
+  are the isolated options. Add further strategies by implementing `SandboxRunner`.
 - **Privacy is strict:** per-user data has no admin read-bypass and ownership checks return
   404 (not 403). The one deliberate carve-out is the metadata-only `UsageLedger` (chargeback).
 - **Config has two layers.** `config.yml` is the seed; admin UI edits live in a DB overlay
@@ -69,10 +68,10 @@ live in `backend/evals/run_evals.py` and are not part of CI.
   sandbox runner type) stay file-only.
 
 ## Status
-**Tiers 1–4 complete** (see [docs/ROADMAP.md](docs/ROADMAP.md)): streaming chat + resumable
-agent loop with approvals, RAG (hybrid Qdrant + rerank), cross-conversation memory,
-sub-agents, checkpoints, multimodal, auth/multi-user + Entra SSO, container sandbox,
-observability + usage/cost chargeback, an OpenAI-compatible **API gateway** (Phase 1:
-per-user keys + `/v1/chat/completions` & `/v1/models`), and tests/CI. **Tier 5** (Postgres, PHI/data
-governance) is deferred and gates any sensitive-data deployment. Extend along the documented
-seams above.
+**[docs/ROADMAP.md](docs/ROADMAP.md) is the single source of truth for status** — don't
+restate it here (a copy of it in this file went stale once already). Short version as of
+July 2026: Tiers 1–4 complete (including agent skills, custom assistants, spend budgets,
+live admin config, the AgentCore off-host sandbox, optional Postgres, and gateway
+Phase 1); open items are gateway Phase 2 (`/v1/agent/completions`) and Tier 5
+PHI/data-governance, which gates any sensitive-data deployment. Extend along the
+documented seams above.

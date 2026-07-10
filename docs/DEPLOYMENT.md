@@ -7,6 +7,9 @@ difference.
 
 In production Phlox is a **single process**: FastAPI serves the API *and* the pre-built React
 SPA from one Uvicorn process on one port. There is no separate frontend service.
+This topology (and the containerized alternative in [DOCKER.md](DOCKER.md), plus the three
+sandbox options) is drawn in
+[`diagrams/phlox-deployment-sandbox-options.svg`](diagrams/phlox-deployment-sandbox-options.svg).
 
 > **Single process is required, not just simpler.** The default embedded Qdrant vector store
 > locks its on-disk directory to one process, so do **not** run Uvicorn with `--workers > 1`
@@ -110,7 +113,8 @@ use Postgres instead. Review `auth` and the sandbox section (see §8).
 > **Config precedence:** `config.yml` is only the **seed for a fresh database**. Once a
 > provider profile is edited in the app's **Settings → (Admin) Configuration** panel, that
 > value is stored in the DB and **overrides `config.yml`**. After go-live, change provider
-> settings in the admin UI, not the file.
+> settings in the admin UI, not the file. (Full three-layer model:
+> [ARCHITECTURE.md](ARCHITECTURE.md) §6.)
 
 ### 5b. Secrets via an environment file
 
@@ -330,4 +334,3 @@ of `backend/data/`.
 - [ ] Decided database: SQLite (default) or Postgres (`DATABASE_URL`) — see §5d
 - [ ] `backend/data/` (or the Postgres database, if used) backed up on a schedule
 - [ ] Single process only (no `--workers`, one instance per data dir)
-```

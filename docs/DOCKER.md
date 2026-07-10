@@ -5,6 +5,10 @@ React SPA in one process on **one port (8000)**. Persistent state and the runtim
 config live **outside** the image on mounted volumes, so the same image works across
 deployments and your data survives `docker rm` / `podman rm` / image rebuilds.
 
+This topology (and the host/systemd alternative in [DEPLOYMENT.md](DEPLOYMENT.md)) is
+drawn in
+[`diagrams/phlox-deployment-sandbox-options.svg`](diagrams/phlox-deployment-sandbox-options.svg).
+
 **Docker and Podman are interchangeable here** — Podman's CLI is Docker-compatible, so
 every `docker …` command below works as `podman …`. Where the two genuinely differ
 (rootless volume permissions, SELinux labels, the host alias), it's called out inline and
@@ -116,6 +120,7 @@ Also make sure the server listens on all interfaces, not just loopback — e.g. 
 > error."** because it's still dialing `localhost` from inside the container), fix it in
 > **Settings → (Admin) Configuration → provider profiles** instead — that applies live, no
 > restart. This catches almost everyone who containerizes an existing Phlox instance.
+> (Full three-layer config model: [ARCHITECTURE.md](ARCHITECTURE.md) §6.)
 
 ---
 

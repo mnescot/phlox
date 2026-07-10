@@ -85,6 +85,15 @@ The things a user *feels* immediately; they make it a real agent, not "chat that
   and can scope `search_documents` by document ID. _Implemented in:_ `routers/chat.py`,
   `schemas.py`, `agent/tools/docs.py`, `rag/retrieve.py`, `rag/store.py`, `Composer.jsx`,
   `Message.jsx`, store `sendMessage`.
+- [x] **Agent skills.** Named, reusable markdown workflows the agent can follow
+  ([Anthropic Agent Skills](https://github.com/anthropics/skills)-compatible, with
+  SKILL.md import/export): explicit **`/` slash-command** invocation, **auto-activation**
+  via progressive disclosure (`use_skill` tool + name/description listing), per-skill
+  auto-activate flag, private skills for every user + admin-published public skills, and
+  three seeded examples on first boot. _Implemented in:_ `skills.py`,
+  `routers/skills.py`, `agent/tools/skills.py`, `models.py` (`Skill`), `routers/chat.py`
+  (per-turn injection), `Composer.jsx` (slash picker + chips + toggle),
+  `settings/SkillsPanel.jsx`. Tests: `tests/test_skills.py`. See [SKILLS.md](SKILLS.md).
 - [x] **Opt-in live web search.** `web_search` discovers current web results with
   zero-config ddgs by default, optional SearXNG via `web_search.searxng_url` /
   `SEARXNG_URL`, and a per-prompt Composer toggle keeps the tool unadvertised unless the
@@ -115,6 +124,14 @@ The things a user *feels* immediately; they make it a real agent, not "chat that
   CPU/mem/PID limits + network isolation; per-conversation workspace bind-mounted; engine
   auto-detection with graceful fallback to local. Select via `sandbox.runner: container`.
   _Implemented in:_ `sandbox/runner.py`, `config.get_sandbox_config`.
+- [x] **Off-host sandbox (AWS Bedrock AgentCore Code Interpreter).** Third
+  `SandboxRunner`: executes agent code in a managed Firecracker **microVM** off the Phlox
+  host (kernel-level isolation, no local Docker needed). One session per conversation,
+  workspace synced in/out around each run, deterministic teardown on conversation delete,
+  graceful fallback to `local` on AWS errors. Select via `sandbox.runner: agentcore`.
+  _Implemented in:_ `sandbox/runner.py` (`AgentCoreCodeInterpreterRunner`,
+  `close_session`), `scripts/e2e_agentcore.py` (live end-to-end check),
+  `tests/test_sandbox_agentcore.py`. See [SANDBOX.md](SANDBOX.md).
 - [x] **Observability.** Per-message **token usage + cost** persisted (`Message.usage`,
   priced from `config.yml`) with a `/api/usage` aggregate and in-UI token meter; structured
   per-request logging; an optional **OpenTelemetry** tracing seam (no-op unless configured).
@@ -164,9 +181,11 @@ The things a user *feels* immediately; they make it a real agent, not "chat that
   (`AppConfig`), `config.py` (getter overlays), `routers/admin_config.py`,
   `sandbox/runner.py` (`reset_runner`), `ConfigPanel.jsx`. See [ARCHITECTURE.md](ARCHITECTURE.md)
   §6 + [AUTH.md](AUTH.md).
-- [x] **Tests + CI + evals.** pytest backend suite (unit + TestClient API + scripted-provider
-  agent-loop & fallback tests), **GitHub Actions CI** (ruff + pytest + frontend build), and a
-  live-model **eval harness**. _Implemented in:_ `backend/tests/`, `.github/workflows/ci.yml`,
+- [x] **Tests + CI + evals + coverage.** pytest backend suite (unit + TestClient API +
+  scripted-provider agent-loop & fallback tests), **GitHub Actions CI** (ruff + pytest +
+  frontend build), **code coverage** (`pytest-cov` → Codecov badge; CodeFactor tracks code
+  quality), and a live-model **eval harness**. _Implemented in:_ `backend/tests/`,
+  `.github/workflows/ci.yml`, `backend/pyproject.toml` (`[tool.coverage.*]`),
   `backend/evals/run_evals.py`.
 - [x] **Resilience.** Client **timeouts + automatic retries** (OpenAI + Bedrock, config-driven)
   and a runtime **fallback provider** that swaps in if the active model fails mid-stream.
@@ -238,7 +257,8 @@ Deferred until the app is used with real/sensitive data. **Gates any PHI use.**
 ---
 
 ### Status
-**Tiers 1, 2, 3, and 4 are complete.** Remaining Tier 4 nice-to-haves: full
+**Tiers 1, 2, 3, and 4 are complete** — including agent **skills**, the **AgentCore**
+off-host sandbox, and CI with code coverage. Remaining Tier 4 nice-to-haves: full
 conversation-branch tree, React/JSX live artifact previews, command palette, voice.
 **API gateway Phase 1 is complete; Phase 2 (`/v1/agent/completions`) is next.**
 **Postgres support is done (optional, opt-in via `DATABASE_URL`); PHI/data-governance

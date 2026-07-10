@@ -2,7 +2,8 @@
 
 Phlox runs agent code/shell tools (`execute_python`, `execute_node`, `run_shell`)
 through a swappable **`SandboxRunner`** (`backend/app/sandbox/runner.py`). Three
-implementations ship; pick one in `config.yml`.
+implementations ship; pick one in `config.yml`. The three options are compared visually
+in [`diagrams/phlox-deployment-sandbox-options.svg`](diagrams/phlox-deployment-sandbox-options.svg).
 
 | Runner | Isolation | When to use |
 |---|---|---|

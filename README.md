@@ -95,6 +95,7 @@ models).
 | Doc | What it covers |
 |---|---|
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | System map, request lifecycle, module guide — **start here** |
+| [docs/diagrams/](docs/diagrams/) | Architecture, request-lifecycle, and deployment/sandbox diagrams (editable brand-palette SVG) |
 | [docs/ROADMAP.md](docs/ROADMAP.md) | What's done and what's next (Tiers 1–5) |
 | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Production deployment on Linux (Ubuntu/RHEL) under **systemd** |
 | [docs/DOCKER.md](docs/DOCKER.md) | Running Phlox in a container (**Docker or Podman**) |
@@ -115,11 +116,14 @@ Two processes: a **FastAPI** backend (LLM orchestration, agent harness, MCP, RAG
 exec, auth, SQLite persistence) and a **React/Vite** frontend. Full details in
 **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**.
 
+![Phlox system architecture](docs/diagrams/phlox-system-architecture.svg)
+
 ```
-backend/   FastAPI app (app/), config.yml, SQLite + Qdrant under data/
+backend/   FastAPI app (app/), config.yml, tests, evals; SQLite + Qdrant under data/
 frontend/  React + Vite + Tailwind SPA
-docs/      ARCHITECTURE, ROADMAP, DEPLOYMENT, DOCKER, AUTH, SANDBOX, MCP, THEMING, BUDGETS, ADDING_A_*
-scripts/   dev.ps1 / dev.sh
+docs/      guides (see table above) + diagrams/ (editable brand-palette SVG)
+docker/    sandbox image definitions (batteries-included python/node)
+scripts/   dev launchers (dev.sh / dev.ps1), seed_demo.py, e2e_agentcore.py
 ```
 
 ## Quick start
